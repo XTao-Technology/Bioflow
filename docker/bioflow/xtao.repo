@@ -1,0 +1,5 @@
+[anna]
+name=anna repo
+baseurl=http://192.168.12.63/packages
+enabled=1
+gpkcheck=0

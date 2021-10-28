@@ -1,0 +1,8 @@
+Meta:         1
+Name:         bioflow
+Branch:       1.1
+Version:      XTAO_GIT_BIOFLOW_VERSION
+Release:      1
+Release-Tags: relext
+License:      GPL
+Author:       Jason Zhang 

@@ -1,0 +1,9 @@
+{
+    "Name" : "simple-test",
+    "Pipeline" : "gatk-simple-1",
+    "InputDataSet" : {
+        "InputDir" : "xtvol@gluster:bioflow/samples/logs"
+    },
+    "SMId" : "jason-sm"
+}
+

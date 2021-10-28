@@ -1,0 +1,10 @@
+{
+    "Name" : "simple-test",
+    "Pipeline" : "branch-var-2",
+    "WorkDir" : "xtvol@gluster:bioflow/jobs/branchvar-test1",
+    "InputDataSet" : {
+        "InputDir" : "xtvol@gluster:bioflow/samples/logs"
+    },
+    "SMId" : "jason-sm"
+}
+

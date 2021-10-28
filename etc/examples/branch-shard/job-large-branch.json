@@ -1,0 +1,10 @@
+{
+    "Name" : "bl-large-branch-test",
+    "Pipeline" : "bl-reshard-large-branch",
+    "InputDataSet" : {
+        "InputDir":"testvol@xtao:bioflow/samples/mem-files"
+    },
+    "Priority" : 7,
+    "SMId" : "gene-plus-sample"
+}
+

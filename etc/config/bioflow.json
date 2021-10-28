@@ -1,0 +1,60 @@
+{
+    "StoreConfig" : {
+        "ServerConfig" : {
+            "VolMntPath" : {
+                "xtfs" : "/mnt/xtfs"
+            },
+            "TempMnt" : "/mnt/xtfs/bioflow/jvm"
+        },
+        "SchedulerConfig" : {
+            "SchedVolMntPath" : {
+                "xtfs" : "/mnt/xtfs"
+            },
+            "AutoMount" : true
+        },
+        "ContainerConfig" : {
+            "ContainerDataDir" : "/vols/data",
+            "ContainerWorkDir" : "/vols/work",
+            "ContainerTempDir" : "/vols/temp"
+        }
+    },
+    "DBConfig" : {
+        "Server" : "192.168.12.72",
+        "Port" : "5432",
+        "User" : "bioflow",
+        "Password" : "bioflow",
+        "DBName" : "bioflow",
+        "Driver" : "postgres"
+    },
+    "LoggerConfig" : {
+        "Logfile" : "/var/log/bioflow.log"
+    },
+    "BackendConfig" : [
+            {
+                "Type" : "eremetic",
+                "Server" : "192.168.12.57",
+                "Port" : "9000"
+            }
+    ],
+    "RestConfig" : {
+        "Server" : "192.168.12.72",
+        "Port" : "9090"
+    },
+    "ClusterConfig" : {
+        "GlobalConfig" : {
+            "QueueCount" : 1
+        },
+        "QueueConfig" : {
+            "0" : {
+                "DBConfig" : {
+                    "Server" : "192.168.12.72",
+                    "Port" : "5432",
+                    "User" : "bioflow",
+                    "Password" : "bioflow",
+                    "DBName" : "bioflow",
+                    "Driver" : "postgres"
+                }
+            }
+        }
+    }
+}

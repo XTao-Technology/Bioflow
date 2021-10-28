@@ -1,0 +1,12 @@
+{
+    "Name" : "jason_Cellranger",
+    "Pipeline" : "jason_cellranger",
+    "Description ": "a pipeline cellranger",
+    "InputDataSet" : {
+	    "InputMap" :{"sample" : "demo",
+		    "ref" : "testvol@xtao:rna_demo/software/refdata-cellranger-hg19-1.2.0",
+		    "fq" : "testvol@xtao:rna_demo/software/tiny-bcl/outs/fastq_path/demo"
+	    }
+
+    }
+}

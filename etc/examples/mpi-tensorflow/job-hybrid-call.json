@@ -1,0 +1,21 @@
+{
+    "Name" : "hybrid-job",
+    "Pipeline" : "mpi-tf-workflow",
+    "InputDataSet" : {
+	"WorkflowInput" : {
+	    "tensorflow.datas" : [
+	    	"vol1@alamo:mnist/t10k-images-idx3-ubyte.gz",
+		"vol1@alamo:mnist/t10k-labels-idx1-ubyte.gz",
+	 	"vol1@alamo:mnist/train-images-idx3-ubyte.gz",
+		"vol1@alamo:mnist/train-labels-idx1-ubyte.gz"
+	    ],
+	    "tensorflow.path" : "vol1@alamo:tensorflow/mnist/",
+	    "tensorflow.tfWorkdir" : "vol1@alamo:partisaner/tensorflow1",
+	    "tensorflow.mpiWorkdir" : "vol1@alamo:partisaner/mpich",
+	    "tensorflow.tfArgs": "Roles.0.Procs=1&Roles.1.Procs=2",
+	    "tensorflow.mpiArgs": "procs=5",
+	    "tensorflow.hdfsURI" : "hdfs://Cc1Biofl:9000/xtao-internal/spark-2.2.0-bin-hadoop2.7.tgz"
+	}
+    },
+    "Priority": 7
+}

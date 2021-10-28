@@ -1,0 +1,9 @@
+{
+    "Name" : "jason-RNA-workflow",
+    "Type" : "WDL",
+    "Description" : "A pipeline for RNA assembly , expression and difference",
+    "WorkDir" : "testvol@xtao:bioflow/jason-rna",
+    "Wdl" : {
+	    "WorkflowFile" : "demo.wdl"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "Name" : "gatk4-call",
+    "Type" : "WDL",
+    "Description" : "A pipeline for gatk4 calling",
+    "WorkDir" : "vol1@alamo:bioflow/wdl",
+    "Wdl" : {
+	    "WorkflowFile" : "variation-call.wdl"
+    }
+}

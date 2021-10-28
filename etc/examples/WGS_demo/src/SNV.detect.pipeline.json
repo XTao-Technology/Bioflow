@@ -1,0 +1,72 @@
+{
+  "Name": "SNV_HAPLOTYPECALLER",
+  "Description": "GATK4 haplotypecaller",
+  "Items": [
+    {
+      "Name": "HaplotypeCaller_BY_CHR",
+      "Type": "VariableParallel",
+      "Forward" : ["vcf"],
+      "BranchVarList": {
+        "chr": [
+          "chr1",
+          "chr2",
+          "chr3",
+          "chr4",
+          "chr5",
+          "chr6",
+          "chr7",
+          "chr8",
+          "chr9",
+          "chr10",
+          "chr11",
+          "chr12",
+          "chr13",
+          "chr14",
+          "chr15",
+          "chr16",
+          "chr17",
+          "chr18",
+          "chr19",
+          "chr20",
+          "chr21",
+          "chr22",
+          "chrX",
+          "chrY"
+        ]
+      },
+      "Items": [
+        {
+          "Name": "HaplotypeCaller",
+          "Cmd": "java -jar /gatk/gatk.jar HaplotypeCaller -R $file.Ref -I $input.bam -O $output.vcf -L $branch.chr --dbsnp $file.dbsnp",
+          "Comments": "GATK4 haplotypecaller for each chromsome",
+          "FailRetryLimit": 4,
+          "Image": "gatk4/wd",
+          "ResourceSpec": {
+            "Cpu": 10,
+            "Memory": 30000
+          }
+        }
+      ]
+    },
+    {
+      "Name": "MergeVCF",
+      "Cmd": "java -jar /gatk/gatk.jar MergeVcfs $inputs.vcf.SplitJoinPrefix{'-I '} -O $output.vcf",
+      "Comments": "GATK4 haplotypecaller for each chromsome",
+      "FailRetryLimit": 4,
+      "Image": "gatk4/wd",
+      "ResourceSpec": {
+        "Cpu": 4,
+        "Memory": 30000
+      }
+    },
+    {
+      "Name": "Annovar_annotation",
+      "Cmd": "perl /BioBin/annovar/table_annovar.pl $input.vcf $file.humandb -buildver hg19 -thread 5 -otherinfo -nastring . -protocol refGene,dbnsfp30a,clinvar_20170905,avsnp150,1000g2015aug_all,esp6500siv2_all  -operation g,f,f,f,f,f -nastring . -vcfinput --argument ',-score_threshold 0.01 -reverse,,,-score_threshold 0.01 -reverse,-score_threshold 0.01 -reverse' --outfile $output.annovar  --gff3dbfile hg19_rmsk.gff ",
+      "Image": "annovar:latest",
+      "ResourceSpec": {
+        "Cpu": 5,
+        "Memory": 20000
+      }
+    }
+  ]
+}

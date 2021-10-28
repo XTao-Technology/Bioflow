@@ -1,0 +1,151 @@
+{
+  "Name": "GATK4_WES",
+  "Description": "GATK4 best practice Germline HaplotypeCaller SNV for Germline data;auther: woody;e-mail: wudi01@ronglian.com ",
+  "Workdir": "testvol@xtao:wtemp/demo",
+  "InputMap": {
+    "Ref": "testvol@xtao:wtemp/rd/hg19.fa",
+    "know_site1": "testvol@xtao:wtemp/rd/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf",
+    "know_site2": "testvol@xtao:wtemp/rd/1000G_phase1.indels.hg19.sites.vcf",
+    "dbsnp": "testvol@xtao:wtemp/rd/dbsnp_138.hg19.vcf",
+    "humandb": "testvol@xtao:wtemp/rd/annovar/humandb"
+  },
+  "Items": [
+    {
+      "Name": "Mutiple_Align",
+      "Type": "ShardFiles",
+      "GroupPattern": "*fastq.gz",
+      "MatchPattern": "*.fastq.gz",
+      "Items": [
+        {
+          "Name": "MEM",
+          "Cmd": "/BioBin/bwa/bwa mem -R '@RG\\tID:1\\tLB:lib1\\tPL:ILLUMINA\\tSM:${sample}\\tPU:unit1' -k 2 -t 18 $file.Ref $files.* > $output.sam",
+          "Comments": "bwa align",
+          "Image": "bwa:base",
+          "ResourceSpec": {
+            "Cpu": 18,
+            "Memory": 10000
+          }
+        },
+        {
+          "Name": "SAMTOBAM",
+          "Cmd": "/BioBin/samtools/samtools view -bS $input.sam -o $output.bam",
+          "Cleanup": "*.sam",
+          "Comments": "samtools turn sam to bam",
+          "Image": "bwa:base",
+          "ResourceSpec": {
+            "Cpu": 1.5,
+            "Memory": 4096
+          }
+        },
+        {
+          "Name": "SORTSAM",
+          "Cmd": "/BioBin/samtools/samtools sort $input.bam -o $output.bam",
+          "Filter": "sorted",
+          "Cleanup": "*.bam",
+          "Image": "bwa:base",
+          "ResourceSpec": {
+            "Cpu": 2,
+            "Memory": 8000
+          }
+        },
+        {
+          "Name": "MarkDuplicate",
+          "Cmd": "java -jar gatk/gatk.jar MarkDuplicates --INPUT $input.bam  --METRICS_FILE $output.metrics --OUTPUT $output.bam ",
+          "Filter": "dup",
+          "FailRetryLimit" : 4,
+          "Cleanup": "*.sorted.bam",
+          "Image": "gatk4/wd",
+          "ResourceSpec": {
+            "Cpu": 10,
+            "Memory": 30000
+          }
+        },
+        {
+          "Name": "BQSR",
+          "Cmd": "java -jar gatk/gatk.jar BaseRecalibrator --input $input.bam --output $output.bqsrtable --reference $file.Ref --known-sites $file.know_site1 --known-sites $file.know_site2",
+          "Image": "gatk4/wd",
+          "ResourceSpec": {
+            "Cpu": 10,
+            "Memory": 30000
+          }
+        },
+        {
+          "Name": "ApplyBQSR",
+          "Cmd": "java -jar gatk/gatk.jar ApplyBQSR -R $file.Ref -I $input.bam -bqsr $input.bqsrtable -O $output.bam",
+          "Cleanup": "*.dup.bam",
+          "Filter": "bqsr",
+          "Image": "gatk4/wd",
+          "ResourceSpec": {
+            "Cpu": 10,
+            "Memory": 30000
+          }
+        }
+      ]
+    },
+    {
+      "Name": "HaplotypeCaller_BY_CHR",
+      "Type": "VariableParallel",
+      "BranchVarList": {
+        "chr": [
+          "chr1",
+          "chr2",
+          "chr3",
+          "chr4",
+          "chr5",
+          "chr6",
+          "chr7",
+          "chr8",
+          "chr9",
+          "chr10",
+          "chr11",
+          "chr12",
+          "chr13",
+          "chr14",
+          "chr15",
+          "chr16",
+          "chr17",
+          "chr18",
+          "chr19",
+          "chr20",
+          "chr21",
+          "chr22",
+          "chrX",
+          "chrY"
+        ]
+      },
+      "Items": [
+        {
+          "Name": "HaplotypeCaller",
+          "Cmd": "java -jar gatk/gatk.jar HaplotypeCaller -R $file.Ref -I $input.bam -O $output.vcf -L $branch.chr --dbsnp $file.dbsnp",
+          "Comments": "GATK4 haplotypecaller for each chromsome",
+	  "FailRetryLimit" : 4,
+          "Image": "gatk4/wd",
+          "ResourceSpec": {
+            "Cpu": 10,
+            "Memory": 30000
+          }
+        }
+      ]
+    },
+    {
+      "Name": "MergeVCF",
+      "Cmd": "java -jar gatk/gatk.jar MergeVcfs $inputs.vcf.SplitJoinPrefix{'-I '} -O $output.vcf",
+      "Comments": "GATK4 haplotypecaller for each chromsome",
+      "FailRetryLimit" : 4,
+      "Image": "gatk4/wd",
+      "ResourceSpec": {
+        "Cpu": 4,
+        "Memory": 30000
+      }
+    },
+    {
+      "Name": "Annovar_annotation",
+      "Cmd": "perl /BioBin/annovar/table_annovar.pl $input.vcf $file.humandb -buildver hg19 -thread 5 -otherinfo -nastring . -protocol refGene,dbnsfp30a,clinvar_20170905,avsnp150,1000g2015aug_all,esp6500siv2_all  -operation g,f,f,f,f,f -nastring . -vcfinput --argument ',-score_threshold 0.01 -reverse,,,-score_threshold 0.01 -reverse,-score_threshold 0.01 -reverse' --outfile $output.annovar  --gff3dbfile hg19_rmsk.gff ",
+      "Image": "annovar:latest",
+      "ResourceSpec": {
+        "Cpu": 5,
+        "Memory": 20000
+      }
+    }
+  ]
+}

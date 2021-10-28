@@ -1,0 +1,26 @@
+{
+    "Name" : "alamo-single-pipeline",
+    "Description" : "A pipeline for alamo test",
+    "WorkDir" : "xtvol2@dcold:bioflow/jobs/storage-test",
+    "InputMap" : {
+        "VOLUME" : "xtvol1",
+	"HOST" : "xt1"
+    },
+    "Items" : [
+	{
+            	"Name": "single-test",
+	    	"Cmd" : "entrypoint.sh -v $VOLUME -n $HOST -t $FSTYPE -r $RUNTYPE",
+            	"Comments" : "Storage test",
+	    	"Image" : "alamo-test-container",
+	    	"Privileged" : true,
+	    	"Volumes" : {
+	        	"/sys/fs/cgroup" : "/sys/fs/cgroup",
+                	"/dev/fuse" : "/dev/fuse"
+	    	},
+	    	"ResourceSpec" : {
+		    	"Cpu" : 1,
+	            	"Memory" : 5000
+	    	}
+       }
+    ]
+}

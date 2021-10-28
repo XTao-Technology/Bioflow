@@ -1,0 +1,12 @@
+{
+    "Name" : "alamo-test",
+    "Pipeline" : "alamo-test-pipeline",
+    "Priority" : 1,
+    "InputDataSet" : {
+	"InputMap" : {
+	   "VOLUME" : "xtvol1",
+	   "HOST" : "xt1"
+	}
+    }
+}
+

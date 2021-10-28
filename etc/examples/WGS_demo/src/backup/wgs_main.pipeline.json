@@ -1,0 +1,24 @@
+{
+	"Name": "WGS_Demo_Pipeline",
+	"Description": "This pipeline is for SNV,CNV,SV analysis;",
+	"Items": [{
+		"Name": "Map2bqrs",
+		"Type": "Pipeline"
+	},
+	{
+		"Name": "Mutation_Calling",
+		"Type": "CloneParallel",
+		"Items": [{
+			"Name": "Haplotype_Calling",
+			"Type": "pipeline"
+		},
+		{
+			"Name": "CNVnator_Calling",
+			"Type": "Pipeline"
+		},
+		{
+			"Name": "BreakDancer_Calling",
+			"Type": "Pipeline"
+		}]
+	}]
+}

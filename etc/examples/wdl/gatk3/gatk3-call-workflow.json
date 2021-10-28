@@ -1,0 +1,9 @@
+{
+    "Name" : "gatk3-call-workflow",
+    "Type" : "WDL",
+    "Description" : "A pipeline for gatk3 calling",
+    "WorkDir" : "testvol@xtao:bioflow/wdl",
+    "Wdl" : {
+	    "WorkflowFile" : "call-workflow.wdl"
+    }
+}

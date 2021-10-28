@@ -1,0 +1,9 @@
+{
+    "Name" : "gatk4-somatic-pair",
+    "Type" : "WDL",
+    "Description" : "A pipeline for gatk4 cnv",
+    "WorkDir" : "testvol@xtao:bioflow/gatk4-cnv",
+    "Wdl" : {
+	    "WorkflowFile" : "cnv_somatic_pair_workflow.wdl"
+    }
+}

@@ -1,0 +1,135 @@
+{
+  "Name": "CNV_CNVnator",
+  "Description": "CNVnator for WGS CNV detect ; Would update with ",
+  "Items": [
+    {
+      "Name": "CNVNATOR_Prepare_BY_CHR",
+      "Type": "VariableParallel",
+      "Forward" : ["cnvnator"],
+      "BranchVarList": {
+        "chr": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "X",
+          "Y"
+        ]
+      },
+      "Items": [
+        {
+          "Name": "CNVNATOR-Prepare",
+          "Cmd": "/home/biodocker/CNVnator_v0.3.3/src/cnvnator -root $output.root -genome hg19 -chrom $branch.chr -tree $input.bam -unique",
+          "Image": "cnvnator:latest",
+          "Env": {
+            "LD_LIBRARY_PATH": "/home/biodocker/root/lib"
+          },
+          "FailRetryLimit": 4,
+          "Comments": "cnvnator prepare",
+          "ResourceSpec": {
+            "Cpu": 2,
+            "Memory": 10000
+          }
+        },
+        {
+          "Name": "CNVNATOR-histogram",
+          "Cmd": "/home/biodocker/CNVnator_v0.3.3/src/cnvnator -root $input.root -his 100 ",
+          "Comments": "cnvnator make histogram",
+          "Image": "cnvnator:latest",
+          "Env": {
+            "LD_LIBRARY_PATH": "/home/biodocker/root/lib"
+          },
+          "ResourceSpec": {
+            "Cpu": 2,
+            "Memory": 10000
+          }
+        },
+        {
+          "Name": "CNVNATOR-statistics",
+          "Cmd": "/home/biodocker/CNVnator_v0.3.3/src/cnvnator -root $input.root  -stat 100 -d $output.dir",
+          "Comments": "cnvnator calculating statistics",
+          "Env": {
+            "LD_LIBRARY_PATH": "/home/biodocker/root/lib"
+          },
+          "Image": "cnvnator:latest",
+          "ResourceSpec": {
+            "Cpu": 2,
+            "Memory": 10000
+          }
+        },
+        {
+          "Name": "CNVNATOR-Partitioning",
+          "Cmd": "/home/biodocker/CNVnator_v0.3.3/src/cnvnator -root $input.root -partition 100 ",
+          "Comments": "cnvnator partition",
+          "Env": {
+            "LD_LIBRARY_PATH": "/home/biodocker/root/lib"
+          },
+          "Image": "cnvnator:latest",
+          "ResourceSpec": {
+            "Cpu": 2,
+            "Memory": 10000
+          }
+        },
+        {
+          "Name": "CNVNATOR-Identifying",
+          "Cmd": "/home/biodocker/CNVnator_v0.3.3/src/cnvnator -root $input.root -call 100 > $output.cnvnator",
+          "Comments": "cnvnator call CNV",
+          "Env": {
+            "LD_LIBRARY_PATH": "/home/biodocker/root/lib"
+          },
+          "Image": "cnvnator:latest",
+          "ResourceSpec": {
+            "Cpu": 2,
+            "Memory": 10000
+          }
+        }
+      ]
+    },
+    {
+      "Name": "CNVNATOR-merge",
+      "Cmd": "cat $inputs.cnvnator.SplitJoinPrefix{' '} > $output.rawcnv",
+      "Comments": "cnvnator make histogram",
+      "FailRetryLimit": 4,
+      "Env": {
+        "LD_LIBRARY_PATH": "/home/biodocker/root/lib"
+      },
+      "Image": "cnvnator:latest",
+      "ResourceSpec": {
+        "Cpu": 2,
+        "Memory": 10000
+      }
+    },
+    {
+      "Name": "CNVNATOR-2VCF",
+      "Cmd": "/home/biodocker/CNVnator_v0.3.3/cnvnator2VCF.pl  $input.rawcnv > $output.vcf",
+      "Comments": "cnvnator conver to VCF",
+      "FailRetryLimit": 4,
+      "Env": {
+        "LD_LIBRARY_PATH": "/home/biodocker/root/lib"
+      },
+      "Image": "cnvnator:latest",
+      "ResourceSpec": {
+        "Cpu": 2,
+        "Memory": 10000
+      }
+    }
+  ]
+}

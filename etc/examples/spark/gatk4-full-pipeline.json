@@ -1,0 +1,101 @@
+{
+    "Name" : "gatk4-full-pipeline",
+    "Description" : "A pipeline for complete GATK4 analysis",
+    "WorkDir" : "ceph@xtao:bioflow/jobs/gatk4",
+    "InputMap" : {
+    	"Ref" : "ceph@xtao:biodata/data/ref/bwa/hs37d5/hs37d5.fa",
+    	"BWAIndex" : "ceph@xtao:biodata/data/ref/bwa/hs37d5/hs37d5.bwamemindex",
+    	"HDFSRef" : "hdfs@spark:biodata/data/ref/bwa/hs37d5/hs37d5.2bit",
+        "known-site1" : "ceph@xtao:biodata/data/database/gatk_b37/dbsnp_138.b37.vcf",
+        "known-site2" : "ceph@xtao:biodata/data/database/gatk_b37/1000G_phase1.indels.b37.vcf",
+        "known-site3" : "ceph@xtao:biodata/data/database/gatk_b37/Mills_and_1000G_gold_standard.indels.b37.vcf",
+        "HDFSsite1" : "hdfs@spark:biodata/data/database/gatk_b37/dbsnp_138.b37.vcf",
+        "HDFSsite2" : "hdfs@spark:biodata/data/database/gatk_b37/1000G_phase1.indels.b37.vcf",
+        "HDFSsite3" : "hdfs@spark:biodata/data/database/gatk_b37/Mills_and_1000G_gold_standard.indels.b37.vcf",
+        "ReadsId" : "jason-reads",
+        "LBId" : "jason-lb",
+        "PLId" : "ILLUMINA",
+        "PUId" : "jason-pu",
+        "SMId" : "jason-sm"
+    },
+    "Items" : [
+	{
+          "Type" : "ShardFiles",
+          "InputFile" : "config/shard-files1.json",
+          "Name" : "MapLane",
+          "Items" : [
+        	{
+             		"Name": "ToUbam",
+             		"Cmd" : "java -d64 -server -XX:+UseParallelGC -XX:ParallelGCThreads=2 -Xms2g -Xmx12g -jar /bio/gatk/picard.jar FastqToSam F1=$input1 F2=$input2 O=$output.sam SM=${SMId} PU=${PUId} PL=${PLId} LB=${LBId}",
+             		"Comments": "generate unaligned bams from fastq files",
+	     		"OutputDir" : "ubams",
+	     		"ResourceSpec" : {
+		  		"Cpu" : 4,
+		  		"Memory" : 10000
+	      		}
+        	},
+        	{ 
+             		"Name": "gatk4.movedata",
+             		"Cmd": "hdfs dfs -copyFromLocal $input $output.sam",
+	     		"Image" : "datamover",
+	     		"StorageType" : "HDFS",
+	     		"ResourceSpec" : {
+		   		"Cpu" : 1,
+	           		"Memory" : 6000
+	     		}
+                }
+	    ]
+        },
+        { 
+            "Name": "gatk4.BwaSpark",
+            "Cmd": "/opt/gatk4/gatk-launch BwaSpark --input $input1 -O $output.bam --reference $file.HDFSRef --bwamemIndexImage hs37d5.bwamemindex --disableSequenceDictionaryValidation true -- --sparkRunner SPARK --sparkMaster $sys.sparkmaster --files $file.BWAIndex --num-executors 8 --executor-cores 2 --executor-memory 30g --driver-memory 30g --conf 'spark.executor.extraJavaOptions=-XX:hashCode=0' --conf 'spark.driver.extraJavaOptions=-XX:hashCode=0' --conf 'spark.cores.max=16' --conf 'spark.local.dir=/var/spark/storage'",
+            "Comments" : "Generate analysis ready data",
+	    "Image" : "gatk4",
+	    "ResourceSpec" : {
+		    "Cpu" : 1,
+	            "Memory" : 20000
+	    }
+        },
+        { 
+            "Name": "gatk4.ReadsPipelineSpark",
+            "Cmd": "/opt/gatk4/gatk-launch ReadsPipelineSpark --input $input1 -O $output.bam --reference $file.HDFSRef --knownSites $file.HDFSsite1 --knownSites $file.HDFSsite2 --knownSites $file.HDFSsite3 -- --sparkRunner SPARK --sparkMaster $sys.sparkmaster --num-executors 8 --executor-cores 2 --executor-memory 30g --driver-memory 30g --conf 'spark.executor.extraJavaOptions=-XX:hashCode=0' --conf 'spark.driver.extraJavaOptions=-XX:hashCode=0' --conf 'spark.cores.max=16' --conf 'spark.local.dir=/var/spark/storage'",
+            "Comments" : "Generate analysis ready data",
+	    "Image" : "gatk4",
+	    "ResourceSpec" : {
+		    "Cpu" : 1,
+	            "Memory" : 20000
+	    }
+        },
+        { 
+            "Name": "gatk4.SortReadFileSpark",
+            "Cmd": "/opt/gatk4/gatk-launch SortReadFileSpark -I $input.bam -O $output.bam -- --sparkRunner SPARK --sparkMaster $sys.sparkmaster --num-executors 4 --executor-cores 2 --executor-memory 25g --driver-memory 25g --conf 'spark.executor.extraJavaOptions=-XX:hashCode=0' --conf 'spark.driver.extraJavaOptions=-XX:hashCode=0' --conf 'spark.cores.max=16' --conf 'spark.local.dir=/var/spark/storage'",
+            "Comments" : "PrintReadByGATK4",
+	    "Image" : "gatk4",
+	    "ResourceSpec" : {
+		    "Cpu" : 1,
+	            "Memory" : 6000
+	    }
+        },
+        { 
+            "Name": "gatk4.PrintReads",
+            "Cmd": "/opt/gatk4/gatk-launch PrintReadsSpark -I $input.bam -O $output.bam -- --sparkRunner SPARK --sparkMaster $sys.sparkmaster --num-executors 8 --executor-cores 2 --executor-memory 6g --driver-memory 4g --conf 'spark.cores.max=16' --conf 'spark.local.dir=/var/spark/storage'",
+            "Comments" : "PrintReadByGATK4",
+	    "Image" : "gatk4",
+	    "ResourceSpec" : {
+		    "Cpu" : 1,
+	            "Memory" : 6000
+	    }
+        },
+        { 
+            "Name": "gatk4.HyplotypeCallerSpark",
+            "Cmd": "/opt/gatk4/gatk-launch HaplotypeCallerSpark --input $input.bam --output $output.vcf --reference $file.HDFSRef --emitRefConfidence GVCF -- --sparkRunner SPARK --sparkMaster $sys.sparkmaster --num-executors 8 --executor-cores 2 --executor-memory 35g --driver-memory 30g --conf 'spark.executor.extraJavaOptions=-XX:hashCode=0' --conf 'spark.driver.extraJavaOptions=-XX:hashCode=0' --conf 'spark.kryoserializer.buffer.max=2047m' --conf 'spark.cores.max=16' --conf 'spark.local.dir=/var/spark/storage'",
+            "Comments" : "Hylotype Calling",
+	    "Image" : "gatk4",
+	    "StorageType" : "THROUGHPUT",
+	    "ResourceSpec" : {
+		    "Cpu" : 1,
+	            "Memory" : 6000
+	    }
+        }
+    ]
+}

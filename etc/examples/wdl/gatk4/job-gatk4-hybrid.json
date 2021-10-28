@@ -1,0 +1,24 @@
+{
+    "Name" : "gatk4-wdl-job",
+    "Pipeline" : "gatk4-hybrid-call",
+    "InputDataSet" : {
+        "WorkflowInput" : {
+ 	    "Gatk4VarationCall.readPairs" : [
+                   ["vol1@alamo:bioflow/samples/jason-test/jason-276-v11_1.fq.gz", "vol1@alamo:bioflow/samples/jason-test/jason-276-v11_2.fq.gz"]
+		    ],
+    	    "Gatk4VarationCall.hdfsReference" : "hdfs@spark:biodata/data/ref/bwa/hs37d5/hs37d5.2bit",
+    	    "Gatk4VarationCall.dfsReference" : "vol1@alamo:biodata/data/ref/bwa/hs37d5/hs37d5.fa",
+            "Gatk4VarationCall.bwaIndexFile" : "vol1@alamo:biodata/data/ref/bwa/hs37d5/hs37d5.bwamemindex",
+    	    "Gatk4VarationCall.siteFile1" : "hdfs@spark:biodata/data/database/gatk_b37/dbsnp_138.b37.vcf",
+    	    "Gatk4VarationCall.siteFile2" : "hdfs@spark:biodata/data/database/gatk_b37/1000G_phase1.indels.b37.vcf",
+    	    "Gatk4VarationCall.siteFile3" : "hdfs@spark:biodata/data/database/gatk_b37/Mills_and_1000G_gold_standard.indels.b37.vcf",
+            "Gatk4VarationCall.sample" : "frank",
+	    "Gatk4VarationCall.SparkMaster" : "mesos://zk://Cc1Biofl:2181,Cc2Biofl:2181,Cc3Biofl:2181,Cc4Biofl:2181/mesos",
+            "Gatk4VarationCall.SparkExecutorURI" : "hdfs://Cc1Biofl:9000/xtao-internal/spark-2.2.0-bin-hadoop2.7.tgz",
+	    "Gatk4VarationCall.hdfsWorkDir" : "hdfs@spark:/frank/",
+	    "Gatk4VarationCall.alignWithGATK3" : true
+	}
+    },
+    "Priority" : 7
+}
+

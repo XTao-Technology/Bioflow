@@ -1,0 +1,10 @@
+{
+    "Name" : "gatk4-full-job",
+    "Pipeline" : "gatk4-full-pipeline",
+    "InputDataSet" : {
+	"InputDir" : "ceph@xtao:bioflow/samples/jason-test"
+    },
+    "Priority" : 2,
+    "SMId" : "jason-short-sample"
+}
+

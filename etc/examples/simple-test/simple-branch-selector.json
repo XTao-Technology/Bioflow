@@ -1,0 +1,106 @@
+{
+    "Name" : "gatk-simple-branch-selector-1",
+    "Description" : "A pipeline for complete GATK analysis",
+    "WorkDir" : "xtvol1@gluster:bioflow/jobs/jason",
+    "InputMap" : {
+    	"Ref" : "xtvol1@gluster:biodata/data/ref/bwa/hs37d5/hs37d5.fa",
+        "known-site1" : "xtvol1@gluster:biodata/data/database/gatk_b37/dbsnp_138.b37.vcf",
+        "known-site2" : "xtvol1@gluster:biodata/data/database/gatk_b37/1000G_phase1.indels.b37.vcf",
+        "known-site3" : "xtvol1@gluster:biodata/data/database/gatk_b37/Mills_and_1000G_gold_standard.indels.b37.vcf",
+        "ReadsId" : "jason-reads",
+        "LBId" : "jason-lb",
+        "PLId" : "ILLUMINA",
+        "PUId" : "jason-pu",
+        "SMId" : "jason-sm"
+    },
+    "Items" : [
+        { 
+          "Type" : "ShardFiles",
+          "GroupPattern" : "_L*_",
+	  "MatchPattern" : "*.log",
+          "Name" : "MergeLane",
+          "Items" : [
+		{
+		   "Type" : "ShardFiles",
+		   "GroupPattern" : "_R*.",
+		   "MatchPattern" : "*.log",
+		   "Name" : "FilterLane",
+                   "Items" : [
+		       {
+		     	  "Name" : "FileterInputFiles",
+                          "Cmd" : "cat $inputs.* | grep 'port' > $output.filter",
+                          "OutputDir" : "filtered-files",
+		          "Image" : "biotk:latest",
+	            	  "ResourceSpec" : {
+			       "Cpu" : 1,
+			       "Memory" : 4096
+		    	  }
+		       }
+		   ]
+		},
+                {
+                    "Name" : "MergeInputFiles",
+                    "Cmd": "cat $inputs.filter > $output.merge",
+                    "Comments": "merge log files with simple name",
+		    "Filter" : "mergefiles",
+		    "OutputDir" : "grep-files",
+                    "OutputDirTag" : "merged-dir",
+		    "Cleanup" : "*.mergefiles.*",
+	            "ResourceSpec" : {
+			            "Cpu" : 1.5,
+			            "Memory" : 4096
+		    }
+                },
+                {
+                    "Name" : "GrepDocker",
+                    "Cmd": "cat $input | grep 'docker' > $output.docker",
+                    "Comments": "grep docker words based on the merge file",
+		    "Filter" : "dockerfile",
+		    "OutputDir" : "docker-files",
+                    "OutputDirTag" : "docker-dir",
+	            "ResourceSpec" : {
+			            "Cpu" : 1.5,
+			            "Memory" : 4096
+		    }
+                }
+	   ]
+	},
+        {
+             "Name" : "SelectBranch",
+             "Cmd": "echo '{\"Index\":[\"0\"]}' > $output.branch-selector",
+             "Comments": "grep docker words based on the merge file",
+	     "Filter" : "dockerfile",
+             "OutputDir" : "branch-selectors",
+	     "ResourceSpec" : {
+	          "Cpu" : 1.5,
+	          "Memory" : 4096
+             }
+        },
+	{
+	   "Type" : "CloneParallel",
+	   "BranchSelectorTag" : "branch-selector",
+	   "Items" : [
+        	{
+            	    "Name": "CountPortLines",
+                    "Cmd": "cat $inputs.merge | wc -l > $output",
+		    "OutputFile" : "port-words.count",
+                    "Comments" : "Merge the multiple lane's BAM file to a single BAM file",
+	            "ResourceSpec" : {
+			    "Cpu" : 2,
+			    "Memory" : 8000
+	            }
+                },
+        	{
+            	    "Name": "CountDockerLines",
+		    "OutputFile" : "docker-words.count",
+                    "Cmd": "cat $inputs.docker | wc -l > $output",
+                    "Comments" : "Merge the multiple lane's BAM file to a single BAM file",
+	            "ResourceSpec" : {
+			    "Cpu" : 2,
+			    "Memory" : 8000
+	            }
+                }
+	  ]
+	}
+    ]
+}

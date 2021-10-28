@@ -1,0 +1,10 @@
+{
+    "Name" : "jason-shard-v2-jobs",
+    "Pipeline" : "gatk-shard-v2",
+    "InputDataSet" : {
+        "InputDir" : "testvol@xtao:bioflow/samples/control"
+    },
+    "Priority" : 8,
+    "SMId" : "gene-plus-sample"
+}
+

@@ -1,0 +1,26 @@
+{
+  "lane1" : {
+      "Files" :
+         ["161001_NS500823_HN5TGBGXY_L001_HUMCAEEEHPEI-276-v11_1.fq.gz", 
+          "161001_NS500823_HN5TGBGXY_L001_HUMCAEEEHPEI-276-v11_2.fq.gz"
+         ]
+    },
+  "lane2" : {
+      "Files" :
+        ["161001_NS500823_HN5TGBGXY_L002_HUMCAEEEHPEI-276-v11_1.fq.gz",
+         "161001_NS500823_HN5TGBGXY_L002_HUMCAEEEHPEI-276-v11_2.fq.gz"
+        ]
+    },
+  "lane3" : {
+      "Files" :
+        ["161001_NS500823_HN5TGBGXY_L003_HUMCAEEEHPEI-276-v11_1.fq.gz",
+         "161001_NS500823_HN5TGBGXY_L003_HUMCAEEEHPEI-276-v11_2.fq.gz"
+        ]
+    },
+  "lane4" : {
+      "Files" :  
+        ["161001_NS500823_HN5TGBGXY_L004_HUMCAEEEHPEI-276-v11_1.fq.gz",
+         "161001_NS500823_HN5TGBGXY_L004_HUMCAEEEHPEI-276-v11_2.fq.gz"
+        ]
+    }
+}

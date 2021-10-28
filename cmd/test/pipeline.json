@@ -1,0 +1,118 @@
+{
+    "Name" : "gatk-pipeline-1",
+    "Itemcount" : 14, 
+    "Items" : [
+        {
+            "Index" : 0,
+            "Ptype": "PT_SINGLE_READ",
+            "Name": "BWAMAP",
+            "Opts": "-l 30 -k 2 -t 4 -I",
+            "Comments" : "map read to reference"
+        },
+        {
+            "Index" : 1,
+            "Ptype": "PT_MERGE_PAIR",
+            "Name": "BWAMERGE",
+            "Opts": "",
+            "Comments": "merge two read pair sai to sam"
+        },
+        {
+            "Index" : 2,
+            "Ptype": "PT_PAIR_READ",
+            "Name": "TRANSFORMSB",
+            "Opts": "-bS",
+            "Comments": "transform SAM to BAM"
+        },
+        {
+            "Index" : 3,
+            "Ptype": "PT_PAIR_READ",
+            "Name": "FILTERSB",
+            "Opts": "-bF 4",
+            "Comments" : "filter out the un-mapped read"
+        },
+        {
+            "Index" : 4,
+            "Ptype": "PT_PAIR_READ",
+            "Name": "SORTBAM",
+            "Opts": "SORT_ORDER=coordinate CREATE_INDEX=true MAX_RECORDS_IN_RAM=150000",
+            "Comments" : "sort the BAM file"
+        },
+        {
+            "Index" : 5,
+            "Ptype": "PT_PAIR_READ",
+            "Name": "ADDHEAD",
+            "Opts": "",
+            "Comments" : "Add the read group head to the BAM file"
+        },
+        {
+            "Index" : 6,
+            "Ptype": "PT_MERGE_LANE",
+            "Name": "MERGEBAM",
+            "Opts": "",
+            "Comments" : "Merge the multiple lane's BAM file to a single BAM file"
+        },
+        {
+            "Index" : 7,
+            "Ptype": "PT_BAM",
+            "Name": "INDEXBAM",
+            "Opts": "",
+            "Comments" : "Create Index file for the BAM file"
+        },
+        {
+            "Index" : 8,
+            "Ptype": "PT_BAM",
+            "Name": "TGTINTERVAL",
+            "Opts": "",
+            "Comments" : "Create the re-align target intervals",
+            "Inputs" : {
+                "Bam" : 6
+            }
+        },
+        {
+            "Index" : 9,
+            "Ptype": "PT_BAM",
+            "Name": "INDELREALIGN",
+            "Opts": "",
+            "Comments" : "IndelRealigner: re-align the indel according to the target intervals",
+            "Inputs" : {
+                "Bam" : 6,
+                "Tgtinterval" : 8
+            }
+        },
+        {
+            "Index" : 10,
+            "Ptype": "PT_BAM",
+            "Name": "BASERECAL",
+            "Opts": "",
+            "Comments" : "BaseRecalibrator: recal the quality"
+        },
+        {
+            "Index" : 11,
+            "Ptype": "PT_BAM",
+            "Name": "PRINTREAD",
+            "Opts": "",
+            "Comments" : "PrintRead",
+            "Inputs" : {
+                "Bam" : 9,
+                "Bqsr" : 10
+            }
+        },
+        {
+            "Index" : 12,
+            "Ptype": "PT_BAM",
+            "Name": "HAPLOTYPE",
+            "Opts": "",
+            "Comments" : "Haplotype"
+        },
+        {
+            "Index" : 13,
+            "Ptype": "PT_BAM",
+            "Name": "GENOTYPE",
+            "Opts": "",
+            "Comments" : "GenotypeGVCFs",
+            "Inputs" : {
+                "Variant" : 12
+            }
+        }
+    ]
+}

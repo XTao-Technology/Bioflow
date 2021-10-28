@@ -1,0 +1,17 @@
+aclocal.m4
+biocli/Makefile
+biocli/Makefile.in
+bioflow/Makefile
+bioflow/Makefile.in
+install-sh
+missing
+rpmbuild/*
+config.*
+configure
+Makefile
+Makefile.in
+biocli/biocli
+*.tar.gz
+bioflow/bioflow
+bioadm/bioadm
+xtfscli/xtfscli

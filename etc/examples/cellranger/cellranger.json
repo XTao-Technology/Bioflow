@@ -1,0 +1,19 @@
+{
+  "Name": "jason_cellranger",
+  "Description": "A pipeline for single cell express ",
+  "WorkDir" : "testvol@xtao:bioflow/jason_cellranger",
+  "Items": [
+
+	{ "Name": "Count",
+	  "OutputDir" : "demo",
+	  "OutputDirTag" : "demo",
+          "Cmd": "/cellranger-2.1.1/cellranger count --id=${sample}  --fastqs=$file.fq --transcriptome=$file.ref  --localcores=25 --localmem=50 --jobinterval=10000 ",
+          "Filter": "pe",
+          "Image": "cellranger:latest",
+          "ResourceSpec": {
+            "Cpu": 25,
+            "Memory": 90000
+          }
+	}
+   ]
+}

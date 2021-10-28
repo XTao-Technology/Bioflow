@@ -1,0 +1,29 @@
+{
+    "Name" : "jason-RNA-workflow",
+    "Pipeline" : "jason-RNA-workflow",
+    "InputDataSet" : {
+        "WorkflowInput" : {
+ 	        "RNAflow.readPairs" : [
+                   ["SRR064286","testvol@xtao:rna_demo/data/rna-seq/SRR064286_1.fastq", "testvol@xtao:rna_demo/data/rna-seq/SRR064286_2.fastq"],
+                   ["SRR064287","testvol@xtao:rna_demo/data/rna-seq/SRR064287_1.fastq", "testvol@xtao:rna_demo/data/rna-seq/SRR064287_2.fastq"],
+                   ["SRR064437","testvol@xtao:rna_demo/data/rna-seq/SRR064437_1.fastq", "testvol@xtao:rna_demo/data/rna-seq/SRR064437_2.fastq"],
+                   ["SRR064438","testvol@xtao:rna_demo/data/rna-seq/SRR064438_1.fastq", "testvol@xtao:rna_demo/data/rna-seq/SRR064438_2.fastq"],
+                   ["SRR064439","testvol@xtao:rna_demo/data/rna-seq/SRR064439_1.fastq", "testvol@xtao:rna_demo/data/rna-seq/SRR064439_2.fastq"],
+                   ["SRR064440","testvol@xtao:rna_demo/data/rna-seq/SRR064440_1.fastq", "testvol@xtao:rna_demo/data/rna-seq/SRR064440_2.fastq"],
+                   ["SRR064441","testvol@xtao:rna_demo/data/rna-seq/SRR064441_1.fastq", "testvol@xtao:rna_demo/data/rna-seq/SRR064441_2.fastq"]
+		],
+    	    "RNAflow.Ref" : "testvol@xtao:rna_demo/genome/GRCh37/star_build",
+    	    "RNAflow.fa" : "testvol@xtao:rna_demo/genome/GRCh37/ref_genome.fa",
+    	    "RNAflow.gtf" : "testvol@xtao:rna_demo/genome/GRCh37/ref_annot.gtf",
+    	    "RNAflow.fai" : "testvol@xtao:rna_demo/genome/GRCh37/ref_genome.fa.fai",
+    	    "RNAflow.dict" : "testvol@xtao:rna_demo/genome/GRCh37/ref_genome.dict",
+    	    "RNAflow.ctat" : "testvol@xtao:rna_demo/db/star-fusion/GRCh37_gencode_v19_CTAT_lib_July192017/ctat_genome_lib_build_dir",
+    	    "RNAflow.vs" : ["SRR064286_SRR064287_vs_SRR064437_SRR064438","SRR064287_vs_SRR064441", "SRR064439_SRR064440_vs_SRR064286"],
+    	    "RNAflow.logfc" : "1",
+    	    "RNAflow.fdr" : "0.1",
+    	    "RNAflow.bcv" : "0.4"
+	}
+    },
+    "Priority" : 9
+}
+

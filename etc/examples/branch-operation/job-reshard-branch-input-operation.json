@@ -1,0 +1,10 @@
+{
+    "Name" : "gatk-shard-branch-input-job",
+    "Pipeline" : "gatk-shard-branch-input-1",
+    "InputDataSet" : {
+        "InputDir":"testvol@xtao:bioflow/samples/mem-files"
+    },
+    "Priority" : 10,
+    "SMId" : "gene-plus-sample"
+}
+

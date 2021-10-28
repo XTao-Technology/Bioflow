@@ -1,0 +1,9 @@
+{
+    "Name" : "gatk-job-gene+",
+    "Pipeline" : "gatk-nomem-pipeline",
+    "InputDataSet" : {
+        "InputDir" : "xtvol@gluster:bioflow/samples/memfiles"
+    },
+    "SMId" : "gene-plus-sample"
+}
+

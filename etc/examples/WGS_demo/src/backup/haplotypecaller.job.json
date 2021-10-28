@@ -1,0 +1,9 @@
+{
+    "Name" :"MY_WGS_JOB",
+    "Pipeline" : "GATK4_WES",
+    "InputDataSet" : {
+        "InputDir" : "testvol@xtao:rna_demo/data/second/Citations_1/",
+        "InputMap" : {"sample" : "WGStest"}
+   }
+}
+

@@ -1,0 +1,9 @@
+{
+    "Name" : "mpi-tf-workflow",
+    "Type" : "WDL",
+    "Description" : "A pipeline for tensorflow calling",
+    "WorkDir" : "vol1@alamo:tensorflow/wdl",
+    "Wdl" : {
+            "WorkflowFile" : "call-workflow.wdl"
+    }
+}

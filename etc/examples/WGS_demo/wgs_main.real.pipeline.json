@@ -1,0 +1,97 @@
+{
+  "Name": "WGS_Demo_Pipeline",
+  "Description": "This pipeline is for SNV,CNV,SV analysis;",
+  "WorkDir" : "testvol@xtao:bioflow/jason-wgs",
+  "Items": [
+    {
+      "Name": "Mutiple_Align",
+      "Type": "ShardFiles",
+      "GroupPattern": "*fastq.gz",
+      "MatchPattern": "*.fastq.gz",
+      "Items": [
+        {
+          "Name": "MEM",
+          "Cmd": "/BioBin/bwa/bwa mem -R '@RG\\tID:1\\tLB:lib1\\tPL:ILLUMINA\\tSM:${sample}\\tPU:unit1' -k 2 -t 18 $file.Ref $files.* > $output.sam",
+          "Comments": "bwa align",
+          "Image": "bwa:base",
+          "ResourceSpec": {
+            "Cpu": 18,
+            "Memory": 15000
+          }
+        },
+        {
+          "Name": "SAMTOBAM",
+          "Cmd": "/BioBin/samtools/samtools view -bS $input.sam -o $output.bam",
+          "Cleanup": "*.sam",
+          "Comments": "samtools turn sam to bam",
+          "Image": "bwa:base",
+          "ResourceSpec": {
+            "Cpu": 1.5,
+            "Memory": 4096
+          }
+        },
+        {
+          "Name": "SORTSAM",
+          "Cmd": "/BioBin/samtools/samtools sort $input.bam -o $output.bam",
+          "Filter": "sorted",
+          "Cleanup": "*.bam",
+          "Image": "bwa:base",
+          "ResourceSpec": {
+            "Cpu": 2,
+            "Memory": 8000
+          }
+        },
+        {
+          "Name": "MarkDuplicate",
+          "Cmd": "java -jar /gatk/gatk.jar MarkDuplicates --INPUT $input.bam  --METRICS_FILE $output.metrics --OUTPUT $output.bam ",
+          "Filter": "dup",
+          "FailRetryLimit": 4,
+          "Cleanup": "*.sorted.bam",
+          "Image": "gatk4/wd",
+          "ResourceSpec": {
+            "Cpu": 10,
+            "Memory": 30000
+          }
+        },
+        {
+          "Name": "BQSR",
+          "Cmd": "java -jar /gatk/gatk.jar BaseRecalibrator --input $input.bam --output $output.bqsrtable --reference $file.Ref --known-sites $file.know_site1 --known-sites $file.know_site2",
+          "Image": "gatk4/wd",
+          "ResourceSpec": {
+            "Cpu": 10,
+            "Memory": 30000
+          }
+        },
+        {
+          "Name": "ApplyBQSR",
+          "Cmd": "java -jar /gatk/gatk.jar ApplyBQSR -R $file.Ref -I $input.bam -bqsr $input.bqsrtable -O $output.bam",
+          "Cleanup": "*.dup.bam",
+          "Filter": "bqsr",
+          "Image": "gatk4/wd",
+          "ResourceSpec": {
+            "Cpu": 10,
+            "Memory": 30000
+          }
+        }
+      ]
+    },
+    {
+      "Name": "Call_Variance",
+      "Type": "CloneParallel",
+      "Items": [
+        {
+          "Name": "SNV_HAPLOTYPECALLER",
+          "Type": "Pipeline"
+        },
+        {
+          "Name": "CNV_CNVnator",
+          "Type": "Pipeline"
+        },
+        {
+          "Name": "SV_BreakDancer",
+          "Type": "Pipeline"
+        }
+      ]
+    }
+  ]
+}

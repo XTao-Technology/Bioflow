@@ -1,0 +1,1 @@
+docker create --restart=always --privileged=true --net=host --name bioflow -e ETCD_CLUSTER=http://192.168.10.77:2379 -v /var/log:/var/log -v /mnt/xtfs:/mnt/xtfs -v /mnt/xtfs1:/mnt/xtfs1 -p 9090:9090 xtao/bioflow:1.0

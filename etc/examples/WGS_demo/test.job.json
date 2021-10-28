@@ -1,0 +1,16 @@
+{
+  "Name": "MY_WGS_test",
+  "Pipeline": "WGS_Demo_Pipeline",
+  "WorkDir" : "testvol@xtao:WGS_test",
+  "InputDataSet": {
+    "InputDir": "testvol@xtao:wtemp/rd",
+    "InputMap": {
+      "sample": "WGStest",
+      "Ref": "testvol@xtao:wtemp/rd/hg19.fa",
+      "know_site1": "testvol@xtao:wtemp/rd/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf",
+      "know_site2": "testvol@xtao:wtemp/rd/1000G_phase1.indels.hg19.sites.vcf",
+      "dbsnp": "testvol@xtao:wtemp/rd/dbsnp_138.hg19.vcf",
+      "humandb": "testvol@xtao:wtemp/rd/annovar/humandb"
+    }
+  }
+}

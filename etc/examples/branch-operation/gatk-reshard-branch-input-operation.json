@@ -1,0 +1,241 @@
+{
+    "Name" : "gatk-shard-branch-input-1",
+    "Description" : "A test pipeline to show the sharding on gatk utils",
+    "WorkDir" : "testvol@xtao:bioflow/jobs/gc-re-shard-test",
+    "InputMap" : {
+    	"Ref" : "testvol@xtao:biodata/data/ref/bwa/hs37d5/hs37d5.fa",
+        "known-site1" : "testvol@xtao:biodata/data/database/gatk_b37/dbsnp_138.b37.vcf",
+        "known-site2" : "testvol@xtao:biodata/data/database/gatk_b37/1000G_phase1.indels.b37.vcf",
+        "known-site3" : "testvol@xtao:biodata/data/database/gatk_b37/Mills_and_1000G_gold_standard.indels.b37.vcf",
+        "ReadsId" : "jason-reads",
+        "LBId" : "jason-lb",
+        "PLId" : "ILLUMINA",
+        "PUId" : "jason-pu",
+        "SMId" : "jason-sm"
+    },
+    "Items" : [
+        {
+            "Name": "first111",
+            "Cmd": "sleep 60",
+            "ResourceSpec":{
+                "Cpu":1,
+                "Memory":8000
+            }
+        },
+        {
+        "Name":"raw1",
+        "Type":"CloneParallel",
+	"Forward": ["reorderfiles-dir"],
+        "Items":[
+                {
+                    "Name": "Prepareitem1",
+                    "Cmd": "sleep 6",
+                    "ResourceSpec":{
+                        "Cpu":1,
+                        "Memory":8000
+                    }
+                },
+                {
+                    "Name": "Prepareitem11",
+                    "Cmd": "sleep 60",
+                    "ResourceSpec":{
+                        "Cpu":1,
+                        "Memory":8000
+                    }
+                },
+                {   
+                    "Name":"raw1111",
+                    "Type":"CloneParallel",
+		    "Forward": ["reorderfiles-dir"],
+                    "Items":[
+                    {
+                    "Name": "Prepareitem1111",
+                    "Cmd": "sleep 60",
+                    "ResourceSpec":{
+                        "Cpu":1,
+                        "Memory":8000
+                        }
+                    },
+                    {
+                      "Type" : "ShardFiles",
+                      "InputFile" : "config/shard-files.json",
+		      "Forward": ["reorderfiles-dir"],
+                      "Name" : "MapLane",
+                      "Items" : [
+                            {
+                                "Name" : "Gen.ReorderSam",
+                                "Cmd": "java -Xmx12g -jar /bio/gatk/picard.jar ReorderSam $inputs.*.SplitJoinPrefix{'I='} R=$file.Ref O=$output.sam",
+                                "Comments": "transform SAM to BAM",
+                                "Filter" : "reorder",
+                                "Image" : "biotk",
+                                "OutputDir" : "reorder-samfiles-dir",
+                                "OutputDirTag" : "reorderfiles-dir",
+                                "WorkDirMapTarget" : "/reorder-workdir",
+                                "InputDirMapTarget" : "/reorder-inputdir",
+                                "ResourceSpec" : {
+                                    "Cpu" : 1,
+                                    "Memory" : 7096
+                                }
+                            }
+                        ]
+                    }
+                    ]
+                }
+            ]
+        },
+        {
+        "Name":"raw2",
+        "Type":"CloneParallel",
+        "Items":[
+            {
+                    "Name": "Prepareitem2",
+                    "Cmd": "sleep 6",
+                    "ResourceSpec":{
+                        "Cpu":1,
+                        "Memory":8000
+                    }
+            },
+            {
+                "Type" : "ShardFiles",
+                "InputDirTag" : "reorderfiles-dir",
+                "GroupPattern" : "_L*_",
+                "MatchPattern" : "*.reorder.sam",
+                "Name" : "ToBam",
+                "Items" : [
+                    {
+                        "Name": "Gen.SamToBam",
+                        "Cmd": "/bio/samtools view -bS $input -o $output.bam",
+                        "Comments": "samtools view to transform SAM to BAM",
+                        "Filter" : "samtobam",
+                        "Image" : "gatk3",
+                        "ResourceSpec" : {
+                            "Cpu" : 1,
+                            "Memory" : 7096
+                        }
+                    },
+                    {
+                        "Name": "Gen.SortSam",
+                        "Cmd": "java -Xmx12g -jar /bio/gatk/picard.jar SortSam I=$input O=$output.bam SORT_ORDER=coordinate CREATE_INDEX=true MAX_RECORDS_IN_RAM=150000",
+                        "Comments" : "sort the BAM file",
+                        "Filter" : "sort",
+                        "FailRetryLimit": 3,
+                        "Image" : "gatk3",
+                        "ResourceSpec" : {
+                            "Cpu" : 2,
+                            "Memory" : 15000
+                        }
+                    },
+                    {
+                        "Name": "cloneinshard",
+                        "Type":"CloneParallel",
+                        "Items": [
+                            {
+                                "Name": "Prepareitem5",
+                                "Cmd": "sleep 6",
+                                "ResourceSpec":{
+                                    "Cpu":1,
+                                    "Memory":8000
+                                }
+                            },
+                            {
+                                "Name": "Prepareitem6",
+                                "Cmd": "ls /etc/",
+                                "ResourceSpec":{
+                                    "Cpu":1,
+                                    "Memory":8000
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+            ]
+        },
+        {
+            "Type" : "ShardFiles",
+            "InputDir" : "./",
+            "GroupPattern" : "_L*_",
+            "MatchPattern" : "*.sort.bam",
+            "Name" : "ToBam",
+            "Items" : [
+                {
+                    "Name": "Gen.AddOrReplaceReadGroups",
+                    "Cmd": "java -Xmx12g -jar /bio/gatk/picard.jar AddOrReplaceReadGroups I=$input1 O=$output.bam ID=$ReadsId LB=$LBId PL=$PLId PU=$PUId SM=$SMId",
+                    "Comments" : "Add the read group head to the BAM file",
+                    "Filter" : "addheader",
+                    "Image" : "biotk",
+                    "ResourceSpec" : {
+                        "Cpu" : 2,
+                        "Memory" : 7000
+                    }
+                }
+            ]
+        },
+        {
+        "Name":"raw3",
+        "Type":"CloneParallel",
+        "Items":[
+            {
+                    "Name": "Prepareitem3",
+                    "Cmd": "sleep 6",
+                    "ResourceSpec":{
+                        "Cpu":1,
+                        "Memory":8000
+                    }
+            },
+            {
+                "Name": "varaitem",
+                "Type" : "VariableParallel",
+                "BranchVarMapFile" : "config/merge-branch-var.json",
+                "Items" : [
+                    {
+                        "Name": "Gen.MergeSamFiles",
+                        "Cmd": "java -Xmx12g -jar /bio/gatk/picard.jar MergeSamFiles $inputs.bam.splitjoinprefix{'I='} COMMENT=$branch.comment O=$output.bam",
+                        "Comments" : "Merge the multiple lane's BAM file to a single BAM file",
+                        "Filter" : "merge",
+                        "Image" : "gatk3",
+                        "ResourceSpec" : {
+                            "Cpu" : 2,
+                            "Memory" : 8000
+                        }
+                    },
+                    {
+                        "Name": "Gen.index",
+                        "Cmd": "/bio/samtools index $input.bam",
+                        "Comments" : "Create Index file for the BAM file",
+                        "Image" : "biotk",
+                        "ResourceSpec" : {
+                            "Cpu" : 1,
+                            "Memory" : 8000
+                        }
+                    },
+                    {
+                        "Name": "cloneinshard",
+                        "Type":"CloneParallel",
+                        "Items": [
+                            {
+                                "Name": "Prepareitem5",
+                                "Cmd": "sleep 6",
+                                "ResourceSpec":{
+                                    "Cpu":1,
+                                    "Memory":8000
+                                }
+                            },
+                            {
+                                "Name": "Prepareitem6",
+                                "Cmd": "ls /etc/",
+                                "ResourceSpec":{
+                                    "Cpu":1,
+                                    "Memory":8000
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+            
+        ]
+        }
+        
+    ]
+}

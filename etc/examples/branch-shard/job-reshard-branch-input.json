@@ -1,0 +1,12 @@
+{
+    "Name" : "gatk-shard-branch-input-job",
+    "Pipeline" : "gatk-shard-branch-input",
+    "InputDataSet" : {
+        "InputDir":"xtvol@gluster:bioflow/samples/memfiles",
+	"InputMap": {
+	    "JobBAMDir" : "xtvol@gluster:bioflow/jobbamdir/"
+	}
+    },
+    "SMId" : "gene-plus-sample"
+}
+

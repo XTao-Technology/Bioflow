@@ -1,0 +1,9 @@
+{
+    "Name" : "gatk-job-reshard",
+    "Pipeline" : "gatk-reshard-short",
+    "InputDataSet" : {
+        "InputDir":"xtvol@gluster:bioflow/samples/memfiles"
+    },
+    "SMId" : "gene-plus-sample"
+}
+

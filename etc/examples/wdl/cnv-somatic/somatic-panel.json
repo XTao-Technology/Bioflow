@@ -1,0 +1,9 @@
+{
+    "Name" : "gatk4-somatic-panel",
+    "Type" : "WDL",
+    "Description" : "A pipeline for gatk4 cnv panel",
+    "WorkDir" : "testvol@xtao:bioflow/gatk4-cnv",
+    "Wdl" : {
+	    "WorkflowFile" : "cnv_somatic_panel_workflow.wdl"
+    }
+}

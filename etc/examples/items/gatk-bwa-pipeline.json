@@ -1,0 +1,62 @@
+{
+    "Name" : "gatk-bwa-pipeline",
+    "Description" : "A pipeline for complete GATK analysis",
+    "WorkDir" : "xtvol@gluster:bioflow/jobs/works",
+    "InputMap" : {
+    	"Ref" : "xtvol@gluster:biodata/data/ref/bwa/hs37d5/hs37d5.fa",
+        "known-site1" : "xtvol@gluster:biodata/data/database/gatk_b37/dbsnp_138.b37.vcf",
+        "known-site2" : "xtvol@gluster:biodata/data/database/gatk_b37/1000G_phase1.indels.b37.vcf",
+        "known-site3" : "xtvol@gluster:biodata/data/database/gatk_b37/Mills_and_1000G_gold_standard.indels.b37.vcf",
+        "ReadsId" : "jason-reads",
+        "LBId" : "jason-lb",
+        "PLId" : "ILLUMINA",
+        "PUId" : "jason-pu",
+        "SMId" : "jason-sm"
+    },
+    "Items" : [
+        { 
+          "Type" : "ShardFiles",
+          "GroupPattern" : "_L*_",
+	  "MatchPattern" : "*.fq.gz",
+          "Name" : "MapLane",
+          "Items" : [
+                {
+                    "Name": "Mem"
+                },
+                {
+                    "Name" : "ReorderSamFiles"
+                },
+                {
+                    "Name": "SamToBam"
+                },
+                {
+                    "Name": "SortSam"
+                }
+            ]
+        },
+        {
+            "Name": "MergeSamFiles"
+        },
+        {
+            "Name": "Index"
+        },
+        {
+            "Name": "RealignerTargetCreator"
+        },
+        {
+            "Name": "IndelRealigner"
+        },
+        {
+            "Name": "BaseRecalibrator"
+        },
+        {
+            "Name": "PrintReads"
+        },
+        {
+            "Name": "HaplotypeCaller"
+        },
+        {
+            "Name": "GenotypeGVCFs"
+        }
+    ]
+}

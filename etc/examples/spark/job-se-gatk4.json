@@ -1,0 +1,12 @@
+{
+    "Name" : "gatk4-single-end-job",
+    "Pipeline" : "gatk4-full-pipeline",
+    "InputDataSet" : {
+	"InputMap" : {
+             "sample" : "ceph@xtao:bioflow/samples/se-sample/SP.fq.gz"
+	}    
+    },
+    "Priority" : 2,
+    "SMId" : "jason-short-sample"
+}
+

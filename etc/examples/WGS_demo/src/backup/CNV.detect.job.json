@@ -1,0 +1,13 @@
+{
+    "Name" :"CNV_JOB_real",
+    "Pipeline" : "CNV_DETECT",
+    "InputDataSet" : {
+        "InputDir" : "testvol@xtao:wtemp/rd/",
+        "InputMap" : {"sample" : "wtest",
+                      "bam" : "testvol@xtao:wtemp/demo/job-dedb25d7-9eaa-4547-64d0-a7aa42c8418e/SRR2052338_1.fastq.gz-SRR2052338_2.fastq.gz.bqsr.bam",
+                      "Ref": "testvol@xtao:wtemp/rd/hg19.fa",
+                      "splitfa" : "testvol@xtao:wtemp/rd/split-hg19/chrM.fa "
+                     }
+   }
+}
+

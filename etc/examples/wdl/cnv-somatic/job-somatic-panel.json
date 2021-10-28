@@ -1,0 +1,58 @@
+{
+	"Name" : "gatk4-somatic-panel-job",
+	"Pipeline" : "gatk4-somatic-panel",
+	"InputDataSet" : {
+			"WorkflowInput" : {
+				"##_COMMENT1": "Inputs",
+				"CNVSomaticPanelWorkflow.normal_bams": ["testvol@xtao:/bioflow/samples/cnv/1720350.dup.bam","testvol@xtao:/bioflow/samples/cnv/1720349.dup.bam"],
+				"CNVSomaticPanelWorkflow.normal_bais": ["testvol@xtao:/bioflow/samples/cnv/1720350.dup.bai","testvol@xtao:/bioflow/samples/cnv/1720349.dup.bai"],
+				"CNVSomaticPanelWorkflow.pon_entity_id": "wes-do-gc",
+
+				"##_COMMENT2": "Reference and Resource",
+				"CNVSomaticPanelWorkflow.ref_fasta_dict": "testvol@xtao:/wtemp/rd/hg19.dict",
+				"CNVSomaticPanelWorkflow.ref_fasta": "testvol@xtao:/wtemp/rd/hg19.fa",
+				"CNVSomaticPanelWorkflow.ref_fasta_fai": "testvol@xtao:/wtemp/rd/hg19.fa.fai",
+				"CNVSomaticPanelWorkflow.intervals": "testvol@xtao:/bioflow/samples/cnv/idt.intervals",
+
+				"##_COMMENT3": "Docker",
+				"CNVSomaticPanelWorkflow.gatk_docker": "jason-cnv-gatk4",
+
+				"##_COMMENT4": "Disk Size Optional",
+				"##CNVSomaticPanelWorkflow.AnnotateIntervals.disk_space_gb": "(optional) Int?",
+				"##CNVSomaticPanelWorkflow.PreprocessIntervals.disk_space_gb": "(optional) Int?",
+				"##CNVSomaticPanelWorkflow.CreateReadCountPanelOfNormals.disk_space_gb": "(optional) Int?",
+				"##CNVSomaticPanelWorkflow.CollectCounts.disk_space_gb": "(optional) Int?",
+
+				"##_COMMENT5": "Memory Optional",
+				"CNVSomaticPanelWorkflow.mem_gb_for_collect_counts": "20",
+				"CNVSomaticPanelWorkflow.mem_gb_for_create_read_count_pon": "20",
+				"CNVSomaticPanelWorkflow.PreprocessIntervals.mem": "20",
+				"CNVSomaticPanelWorkflow.AnnotateIntervals.mem": "20",
+
+
+				"##_COMMENT6": "Preemptibles Optional",
+				"CNVSomaticPanelWorkflow.preemptible_attempts": "3",
+
+				"##_COMMENT8": "CPU Optional",
+				"CNVSomaticPanelWorkflow.PreprocessIntervals.cpu": "10",
+				"CNVSomaticPanelWorkflow.CollectCounts.cpu": "10",
+				"CNVSomaticPanelWorkflow.AnnotateIntervals.cpu": "10",
+				"CNVSomaticPanelWorkflow.CreateReadCountPanelOfNormals.cpu": "10",
+
+				"##_COMMENT8": "MISC Optional",
+				"##CNVSomaticPanelWorkflow.format": "(optional) String?",
+				"##CNVSomaticPanelWorkflow.maximum_zeros_in_interval_percentage": "(optional) Float?",
+				"##CNVSomaticPanelWorkflow.minimum_interval_median_percentile": "(optional) Float?",
+				"##CNVSomaticPanelWorkflow.maximum_zeros_in_sample_percentage": "(optional) Float?",
+				"##CNVSomaticPanelWorkflow.extreme_sample_median_percentile": "(optional) Float?",
+				"##CNVSomaticPanelWorkflow.number_of_eigensamples": "(optional) Int?",
+				"##CNVSomaticPanelWorkflow.extreme_outlier_truncation_percentile": "(optional) Float?",
+				"##CNVSomaticPanelWorkflow.do_impute_zeros": "(optional) Boolean?",
+				"##CNVSomaticPanelWorkflow.padding": "(optional) Int?",
+				"CNVSomaticPanelWorkflow.bin_length": "0",
+				"##CNVSomaticPanelWorkflow.do_explicit_gc_correction": "True",
+				"CNVSomaticPanelWorkflow.gatk4_jar_override": "/gatk/gatk.jar"
+			}
+		},
+	"Priority" : 7
+}

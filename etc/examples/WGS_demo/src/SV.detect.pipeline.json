@@ -1,0 +1,26 @@
+{
+  "Name": "SV_BreakDancer",
+  "Description": "Break Dancer SV detect",
+  "Items": [
+    {
+      "Name": "BreakDancer_CONFIG",
+      "Cmd": "perl /home/bio/breakdancer-1.4.5/perl/bam2cfg.pl $input.bam > $output.cfg",
+      "Image": "breakdancer:latest",
+      "Comments": "make config file for breakdancer",
+      "ResourceSpec": {
+        "Cpu": 2,
+        "Memory": 1000
+      }
+    },
+    {
+      "Name": "BreakDancer_MAX",
+      "Cmd": "/home/bio/breakdancer-1.4.5/build/bin/breakdancer-max $input.cfg > $output.sv",
+      "Comments": "breakdancer Call SV",
+      "Image": "breakdancer:latest",
+      "ResourceSpec": {
+        "Cpu": 2,
+        "Memory": 10000
+      }
+    }
+  ]
+}
