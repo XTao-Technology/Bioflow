@@ -1,0 +1,2 @@
+The storage manger cmd use for http client is:
+'curl  -X POST -H "Content-Type:application/json" "http://localhost:12345/v1/volcluster/mount?Volume=<volume_name>&ClusterName=<clustername>&MountPath=<mountpath>"'

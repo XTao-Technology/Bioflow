@@ -1,0 +1,11 @@
+aclocal.m4
+xstone/Makefile
+xstone/Makefile.in
+install-sh
+missing
+rpmbuild/*
+config.*
+configure
+Makefile
+Makefile.in
+*.tar.gz

@@ -1,0 +1,12 @@
+[Unit]
+Description=Automount manager plugin
+Wants=docker.service                                                             
+Before=docker.service
+
+[Service]
+ExecStart=/opt/xstone/automount-manager-plugin
+Restart=always
+RestartSec=0
+
+[Install]
+WantedBy=multi-user.target
